@@ -1,0 +1,5 @@
+{
+  "name": "Reolink2Samsung",
+  "plugin": "reolink",
+  "description": "Multi-camera live viewer for Reolink NVRs with All Cameras Grid, PTZ, and Patrol (Apps2Samsung base)"
+}

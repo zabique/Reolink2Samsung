@@ -1,0 +1,6 @@
+# your own NVR address and password, baked in at build time
+src/default_config.json
+# local files that are not part of the project
+local/
+snapshots/
+*.log

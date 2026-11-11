@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:tizen="http://tizen.org/ns/widgets"
+        id="http://reolink2samsung.local/Reolink2Samsung" version="1.1.0" viewmodes="maximized">
+    <tizen:application id="Rl2Samsung.Reolink2Samsung" package="Rl2Samsung" required_version="4.0"/>
+    <content src="index.html"/>
+    <feature name="http://tizen.org/feature/screen.size.all"/>
+    <feature name="http://tizen.org/feature/network.internet"/>
+    <icon src="icon.png"/>
+    <name>Reolink2Samsung</name>
+    <description>Local-network live viewer with All Cameras Grid for Reolink NVRs.</description>
+
+    <!-- Allow the app to talk to any host on the LAN (camera IP is user-supplied). -->
+    <access origin="*" subdomains="true"/>
+    <tizen:privilege name="http://tizen.org/privilege/internet"/>
+    <tizen:privilege name="http://tizen.org/privilege/tv.inputdevice"/>
+    <tizen:privilege name="http://tizen.org/privilege/tv.audio"/>
+    <tizen:privilege name="http://tizen.org/privilege/tv.display"/>
+    <tizen:privilege name="http://tizen.org/privilege/application.launch"/>
+    <tizen:privilege name="http://developer.samsung.com/privilege/avplay"/>
+    <tizen:privilege name="http://developer.samsung.com/privilege/network.public"/>
+
+    <!-- RTSP relay background service (Node.js runtime, Tizen 4.0+) -->
+    <tizen:service id="Rl2Samsung.relay" type="service">
+        <tizen:content src="service/relay.js"/>
+        <tizen:name>relay</tizen:name>
+    </tizen:service>
+    <tizen:allow-mixed-content>true</tizen:allow-mixed-content>
+
+    <tizen:profile name="tv"/>
+    <tizen:setting screen-orientation="landscape"
+                   context-menu="disable"
+                   background-support="disable"
+                   encryption="disable"
+                   install-location="auto"
+                   hwkey-event="enable"/>
+    <tizen:metadata key="http://samsung.com/tv/metadata/use.network" value="true"/>
+</widget>
+

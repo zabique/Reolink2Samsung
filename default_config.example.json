@@ -1,0 +1,13 @@
+{
+  "nvrIp": "192.168.1.100",
+  "httpPort": 80,
+  "username": "admin",
+  "password": "",
+  "channelsCount": 8,
+  "ptzChannel": 0,
+  "streamQuality": "sub",
+  "channelNames": {
+    "1": "Front door",
+    "2": "Garden"
+  }
+}

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=1920, height=1080, user-scalable=no">
+    <title>Reolink2Samsung</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Texts marked data-i18n are filled in from js/i18n.js (English by default). -->
+
+<!-- ============ 1. Live view: device list, camera tiles, toolbar ============ -->
+<section id="view-grid" class="view">
+    <header class="top-nav">
+        <div class="brand">Reolink2Samsung</div>
+        <div class="tabs"><span class="tab active" data-i18n="live">Live View</span></div>
+        <div class="grid-meta">
+            <span id="grid-patrol-badge" class="badge-patrol hidden"></span>
+            <span id="grid-clock" class="digital-clock">00:00:00</span>
+        </div>
+    </header>
+
+    <div class="live-body">
+        <aside id="sidebar" class="sidebar">
+            <div class="side-title" data-i18n="device">Device</div>
+            <div class="side-card">
+                <div class="side-device">NVR <span id="side-host" class="side-host"></span></div>
+                <div id="side-state" class="side-state"></div>
+                <div id="side-count" class="side-count"></div>
+                <div id="side-list" class="side-list"></div>
+                <div id="side-hint" class="side-hint" data-i18n="hintReorder"></div>
+            </div>
+        </aside>
+
+        <main class="grid-wrapper">
+            <div id="grid-container" class="grid-container"></div>
+            <div id="grid-bar" class="toolbar"></div>
+        </main>
+    </div>
+</section>
+
+<!-- ============ 2. Fullscreen player ============ -->
+<section id="view-player" class="view hidden">
+    <video id="video" playsinline></video>
+    <!-- AVPlay draws on a hardware plane behind the page: marks its area -->
+    <object id="av-player" type="application/avplayer" class="hidden"></object>
+
+    <!-- PTZ popup: buttons chosen with the arrows, OK (held) moves the camera -->
+    <div id="ptz-overlay" class="ptz-overlay hidden">
+        <div class="ptz-box">
+            <div class="ptz-header">
+                <span class="ptz-badge" data-i18n="ptzTitle">PTZ CONTROL</span>
+                <span id="ptz-cam-title" class="ptz-cam-title"></span>
+            </div>
+            <div id="ptz-pad" class="ptz-pad"></div>
+            <div id="ptz-presets-title" class="ptz-sub hidden" data-i18n="presets">Presets</div>
+            <div id="ptz-presets" class="ptz-presets"></div>
+            <div id="ptz-hints" class="ptz-hints"></div>
+        </div>
+    </div>
+
+    <!-- Stream information and the control bar -->
+    <div id="overlay" class="overlay">
+        <div id="channel-title" class="channel-title"></div>
+        <div id="status" class="status"></div>
+        <div id="stats" class="stats hidden"></div>
+        <div id="player-bar" class="toolbar hidden"></div>
+        <div id="player-hint" class="keys" data-i18n="playerHint"></div>
+    </div>
+</section>
+
+<!-- ============ 3. Settings ============ -->
+<section id="view-setup" class="view hidden">
+    <header class="setup-header">
+        <h1 data-i18n="setTitle">Reolink2Samsung settings</h1>
+        <p class="hint" data-i18n="setHint"></p>
+    </header>
+
+    <div id="form" class="form">
+        <div class="row focusable" data-field="lang" data-type="toggle" data-options="en,pl,es,fr,it">
+            <label data-i18n="fLang">Language</label>
+            <div class="value" id="f-lang"></div>
+        </div>
+        <div class="row focusable" data-field="host" data-type="text">
+            <label data-i18n="fHost"></label>
+            <input id="f-host" type="text" placeholder="192.168.1.100" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="row focusable" data-field="user" data-type="text">
+            <label data-i18n="fUser"></label>
+            <input id="f-user" type="text" placeholder="admin" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="row focusable" data-field="password" data-type="text">
+            <label data-i18n="fPassword"></label>
+            <input id="f-password" type="password" autocomplete="off">
+        </div>
+        <div class="row focusable" data-field="channelsCount" data-type="stepper" data-min="1" data-max="32">
+            <label data-i18n="fChannels"></label>
+            <div class="value" id="f-channelsCount"></div>
+            <div class="row-hint" data-i18n="hChannels"></div>
+        </div>
+        <div class="row focusable" data-field="ptzChannel" data-type="stepper" data-min="0" data-max="32">
+            <label data-i18n="fPtz"></label>
+            <div class="value" id="f-ptzChannel"></div>
+            <div class="row-hint" data-i18n="hPtz"></div>
+        </div>
+        <div class="row focusable" data-field="mode" data-type="toggle" data-options="flv,rtsp">
+            <label data-i18n="fMode"></label>
+            <div class="value" id="f-mode"></div>
+            <div class="row-hint" data-i18n="hMode"></div>
+        </div>
+        <div class="row focusable" data-field="stream" data-type="toggle" data-options="sub,ext,main">
+            <label data-i18n="fStream"></label>
+            <div class="value" id="f-stream"></div>
+            <div class="row-hint" data-i18n="hStream"></div>
+        </div>
+        <div class="row focusable" data-field="audio" data-type="toggle" data-options="on,off">
+            <label data-i18n="fAudio"></label>
+            <div class="value" id="f-audio"></div>
+        </div>
+        <div class="row focusable" data-field="defaultView" data-type="toggle" data-options="grid,player">
+            <label data-i18n="fDefaultView"></label>
+            <div class="value" id="f-defaultView"></div>
+            <div class="row-hint" data-i18n="hDefaultView"></div>
+        </div>
+        <div class="row focusable" data-field="scheme" data-type="toggle" data-options="http,https" data-mode="flv">
+            <label data-i18n="fScheme"></label>
+            <div class="value" id="f-scheme"></div>
+            <div class="row-hint" data-i18n="hScheme"></div>
+        </div>
+        <div class="row focusable" data-field="port" data-type="text" data-mode="flv">
+            <label data-i18n="fPort"></label>
+            <input id="f-port" type="text" inputmode="numeric" placeholder="80" autocomplete="off">
+        </div>
+        <div class="row focusable" data-field="rtspPort" data-type="text" data-mode="rtsp">
+            <label data-i18n="fRtspPort"></label>
+            <input id="f-rtspPort" type="text" inputmode="numeric" placeholder="554" autocomplete="off">
+        </div>
+        <div class="row focusable" data-field="rtspPlayer" data-type="toggle" data-options="auto,mse,avplay" data-mode="rtsp">
+            <label data-i18n="fRtspPlayer"></label>
+            <div class="value" id="f-rtspPlayer"></div>
+            <div class="row-hint" data-i18n="hRtspPlayer"></div>
+        </div>
+
+        <div class="row button focusable primary" data-action="open-grid" data-i18n="bOpenGrid"></div>
+        <div class="row button focusable" data-action="open-player" data-i18n="bOpenPlayer"></div>
+    </div>
+
+    <footer class="setup-footer">
+        <span id="setup-message"></span>
+        <span class="keys" data-i18n="setKeys"></span>
+    </footer>
+</section>
+
+<script src="$WEBAPIS/webapis/webapis.js"></script>
+<script src="js/vendor/mpegts.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
